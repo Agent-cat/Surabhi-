@@ -679,7 +679,7 @@ const AdminPanel = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/events/category/${categoryId}`,
+        `${url}/api/events/category/${categoryId}`,
         {
           method: "DELETE",
           headers: {
