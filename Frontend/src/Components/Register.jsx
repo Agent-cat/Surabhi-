@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { setToken, setUser } from "../utils/auth";
 
 const Register = () => {
+
+  const url="https://surabhi-acn9.onrender.com"
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
@@ -92,7 +94,7 @@ const Register = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:5000/api/users/register",
+        `${url}/api/users/register`,
         {
           method: "POST",
           headers: {

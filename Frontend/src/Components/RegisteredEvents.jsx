@@ -10,6 +10,8 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const RegisteredEvents = () => {
+
+  const url="https://surabhi-acn9.onrender.com"
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,7 +28,7 @@ const RegisteredEvents = () => {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/events/registered",
+        `${url}/api/events/registered`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -10,6 +10,7 @@ const EventModal = React.memo(
     closeEventModal,
     editingEvent,
   }) => {
+    const url="https://surabhi-acn9.onrender.com"
     return (
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto">
         <div className="bg-gray-800 rounded-xl w-full max-w-2xl my-8 mx-4 relative">
@@ -390,6 +391,7 @@ const AdminPanel = () => {
     setEditingEvent(null);
   }, []);
 
+   const url="https://surabhi-acn9.onrender.com";
   const closeCategoryModal = useCallback(() => {
     setShowCategoryModal(false);
     setCategoryForm({ categoryName: "" });
@@ -406,7 +408,7 @@ const AdminPanel = () => {
   const fetchRegistrations = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/registrations${
+        `${url}/api/admin/registrations${
           filter !== "all" ? `?status=${filter}` : ""
         }`,
         {
@@ -427,7 +429,7 @@ const AdminPanel = () => {
   const fetchEvents = useCallback(async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/events",
+        `${url}/api/events`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -476,7 +478,7 @@ const AdminPanel = () => {
   const handleApproval = async (userId, status) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/registrations/${userId}`,
+        `${url}/api/admin/registrations/${userId}`,
         {
           method: "PUT",
           headers: {
@@ -505,7 +507,7 @@ const AdminPanel = () => {
   const handleDeleteEvent = async (categoryId, eventId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/events/${categoryId}/events/${eventId}`,
+        `${url}/api/events/${categoryId}/events/${eventId}`,
         {
           method: "DELETE",
           headers: {
@@ -540,8 +542,8 @@ const AdminPanel = () => {
 
         const response = await fetch(
           editingEvent
-            ? `http://localhost:5000/api/events/${selectedCategory}/events/${editingEvent._id}`
-            : `http://localhost:5000/api/events/${selectedCategory}/events`,
+            ? `${url}/api/events/${selectedCategory}/events/${editingEvent._id}`
+            : `${url}/api/events/${selectedCategory}/events`,
           {
             method: editingEvent ? "PUT" : "POST",
             headers: {
@@ -609,7 +611,7 @@ const AdminPanel = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/events/category",
+          `${url}/api/events/category`,
           {
             method: "POST",
             headers: {
@@ -642,7 +644,7 @@ const AdminPanel = () => {
   const handleUpdateCategory = useCallback(async (categoryId, newName) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/events/category/${categoryId}`,
+        `${url}/api/events/category/${categoryId}`,
         {
           method: "PUT",
           headers: {

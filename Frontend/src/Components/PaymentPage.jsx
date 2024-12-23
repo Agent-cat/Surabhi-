@@ -4,6 +4,8 @@ import { setToken, setUser } from "../utils/auth";
 import qr from "../assets/qr.png";
 
 const PaymentPage = () => {
+
+  const url="https://surabhi-acn9.onrender.com"
   const navigate = useNavigate();
   const location = useLocation();
   const [transactionId, setTransactionId] = useState("");

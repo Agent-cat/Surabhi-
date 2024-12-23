@@ -6,6 +6,8 @@ import { IoCalendarClear } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 const Events = () => {
+
+  const url="https://surabhi-acn9.onrender.com"
   const [events, setEvents] = useState([]);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [showRegisterPopup, setShowRegisterPopup] = useState(false);
@@ -36,7 +38,7 @@ const Events = () => {
   const fetchEvents = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/events"
+        `${url}/api/events`
       );
       const data = response.data;
       setEvents(data);
@@ -82,7 +84,7 @@ const Events = () => {
       }
 
       const response = await axios.put(
-        `http://localhost:5000/api/events/${selectedEvent.categoryId}/events/${selectedEvent._id}/register`,
+        `${url}/api/events/${selectedEvent.categoryId}/events/${selectedEvent._id}/register`,
         {},
         {
           headers: {

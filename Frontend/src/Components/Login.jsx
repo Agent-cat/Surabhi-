@@ -5,6 +5,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { setToken, setUser } from "../utils/auth";
 
 const Login = () => {
+
+  const url="https://surabhi-acn9.onrender.com"
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -29,7 +31,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://localhost:5000/api/users/login",
+        `${url}/api/users/login`,
         {
           method: "POST",
           headers: {
