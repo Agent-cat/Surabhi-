@@ -391,7 +391,7 @@ const AdminPanel = () => {
     setEditingEvent(null);
   }, []);
 
-   const url="https://surabhi-acn9.onrender.com";
+   const url="http://localhost:5000";
   const closeCategoryModal = useCallback(() => {
     setShowCategoryModal(false);
     setCategoryForm({ categoryName: "" });
