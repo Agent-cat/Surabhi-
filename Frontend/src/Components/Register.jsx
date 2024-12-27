@@ -6,7 +6,7 @@ import { setToken, setUser } from "../utils/auth";
 
 const Register = () => {
 
-  const url="https://surabhi-acn9.onrender.com"
+  const url="http://localhost:5000"
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",

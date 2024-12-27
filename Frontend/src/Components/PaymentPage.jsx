@@ -5,7 +5,7 @@ import qr from "../assets/qr.png";
 
 const PaymentPage = () => {
 
-  const url="https://surabhi-acn9.onrender.com"
+  const url="http://localhost:5000"
   const navigate = useNavigate();
   const location = useLocation();
   const [transactionId, setTransactionId] = useState("");

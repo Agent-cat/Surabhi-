@@ -121,12 +121,7 @@ export const login = async (req, res) => {
       }
     }
 
-    // Debug logs
-    console.log("Login attempt:", {
-      email,
-      providedPassword: password,
-      storedHashedPassword: user.password,
-    });
+    
 
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("Password match result:", isMatch);
