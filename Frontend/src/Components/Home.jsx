@@ -3,6 +3,16 @@ import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { FaYoutube } from "react-icons/fa";
 import OptimizedImage from './OptimizedImage';
+import { loadSlim } from "tsparticles-slim"; 
+import Particles from "react-tsparticles";
+
+// Import assets
+import video from "../assets/intro3.mp4";
+import logo from "../assets/logo.png";
+import poster2025 from "../assets/2025.jpg";
+import poster2024 from "../assets/2024.jpg";
+import poster2023 from "../assets/2023.jpg";
+import poster2022 from "../assets/2022.jpg";
 
 const timelineData = [
   {
