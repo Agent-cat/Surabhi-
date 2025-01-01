@@ -1,18 +1,8 @@
-import React from "react";
+import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState, useEffect, useCallback } from "react";
-import video from "../assets/intro3.mp4";
-import logo from "../assets/logo.png";
-import poster2025 from "../assets/2025.jpg";
-import poster2024 from "../assets/2024.jpg";
-import poster2023 from "../assets/2023.jpg";
-import poster2022 from "../assets/2022.jpg";
-import { loadSlim } from "tsparticles-slim"; 
-import Particles from "react-tsparticles";
 import { FaYoutube } from "react-icons/fa";
-
-
+import OptimizedImage from './OptimizedImage';
 
 const timelineData = [
   {
@@ -232,6 +222,35 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
+  // Optimize timeline images
+  const TimelineImage = memo(({ item }) => (
+    <OptimizedImage
+      src={item.image}
+      alt={item.title}
+      className="rounded-lg shadow-xl w-full"
+      priority={true}
+    />
+  ));
+
+  // Optimize carousel images
+  const CarouselImage = memo(({ src, index }) => (
+    <OptimizedImage
+      src={src}
+      alt={`Carousel image ${index + 1}`}
+      className="w-72 h-80 object-cover rounded-lg"
+      priority={index < 3}
+    />
+  ));
+
+  // Optimize chief guest images
+  const ChiefGuestImage = memo(({ guest }) => (
+    <OptimizedImage
+      src={guest.image}
+      alt={guest.name}
+      className="w-full h-60 object-cover"
+    />
+  ));
+
   return (
     <div className="relative w-full">
       <div className="bg-black text-white overflow-x-hidden">
@@ -362,23 +381,7 @@ const Home = () => {
           <div className="relative">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {visibleGuests.map((guest, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
-                  className="bg-purple-900/20 rounded-lg backdrop-blur-sm overflow-hidden"
-                >
-                  <img
-                    src={guest.image}
-                    alt={guest.name}
-                    className="w-full h-60 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="text-xl font-bold mb-2">{guest.name}</h3>
-                    <p className="text-gray-300 text-sm">{guest.role}</p>
-                  </div>
-                </motion.div>
+                <ChiefGuestImage key={index} guest={guest} />
               ))}
             </div>
             
@@ -436,13 +439,7 @@ const Home = () => {
                 }`}
               >
                 <div className="w-full sm:w-1/2 pl-12 sm:px-8 mb-4 sm:mb-0">
-                  <motion.img
-                    src={item.image}
-                    alt={item.title}
-                    className="rounded-lg z-50 shadow-xl w-full"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                  />
+                  <TimelineImage item={item} />
                 </div>
                 <div className="w-full sm:w-1/2 pl-12 sm:px-8">
                   <div className="bg-purple-900/20 p-4 sm:p-6 rounded-lg">
@@ -479,14 +476,7 @@ const Home = () => {
           >
             <div className="flex gap-4 min-w-full">
               {carouselImages.map((image, index) => (
-                <motion.img
-                  key={index}
-                  src={image}
-                  alt={`Carousel image ${index + 1}`}
-                  className="w-72 h-80 object-cover rounded-lg"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <CarouselImage key={index} src={image} index={index} />
               ))}
             </div>
           </motion.div>

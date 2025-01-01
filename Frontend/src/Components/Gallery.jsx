@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import OptimizedImage from './OptimizedImage';
 
 
 import poster1 from "../assets/poster1.jpg"
@@ -116,17 +117,66 @@ const Gallery = () => {
     }
   }, [selectedEvent, events, preloadImages]);
 
-  // Optimize image loading
-  useEffect(() => {
-    const images = currentEventItems;
-    images.forEach(item => {
-      if (item?.image) {
-        const img = new Image();
-        img.loading = "lazy";
-        img.src = item.image;
-      }
-    });
-  }, [currentEventItems]);
+  // Update ImageComponent to use OptimizedImage
+  const ImageComponent = React.memo(({ src, alt, onClick, className }) => (
+    <OptimizedImage
+      src={src}
+      alt={alt}
+      onClick={onClick}
+      className={className}
+    />
+  ));
+
+  // Update image grid rendering
+  const renderImageGrid = useCallback((items, rowIndex) => (
+    <motion.div
+      key={rowIndex}
+      className="grid grid-cols-12 gap-6"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
+    >
+      {rowIndex % 2 === 0 ? (
+        <>
+          <motion.div className="col-span-8 aspect-video">
+            <ImageComponent
+              src={items[0]?.image}
+              alt="Event"
+              onClick={() => handleImageSelect(items[0]?.image)}
+              className="w-full h-full object-cover rounded-2xl"
+            />
+          </motion.div>
+          <motion.div className="col-span-4 aspect-square">
+            <ImageComponent
+              src={items[1]?.image}
+              alt="Event"
+              onClick={() => handleImageSelect(items[1]?.image)}
+              className="w-full h-full object-cover rounded-2xl"
+            />
+          </motion.div>
+        </>
+      ) : (
+        <>
+          <motion.div className="col-span-4 aspect-square">
+            <ImageComponent
+              src={items[0]?.image}
+              alt="Event"
+              onClick={() => handleImageSelect(items[0]?.image)}
+              className="w-full h-full object-cover rounded-2xl"
+            />
+          </motion.div>
+          <motion.div className="col-span-8 aspect-video">
+            <ImageComponent
+              src={items[1]?.image}
+              alt="Event"
+              onClick={() => handleImageSelect(items[1]?.image)}
+              className="w-full h-full object-cover rounded-2xl"
+            />
+          </motion.div>
+        </>
+      )}
+    </motion.div>
+  ), [handleImageSelect]);
 
   const handleEventSelect = useCallback((eventName) => {
     setSelectedEvent(eventName);
@@ -139,6 +189,55 @@ const Gallery = () => {
   const handleImageClose = useCallback(() => {
     setSelectedImage(null);
   }, []);
+
+  // Update modal image to use OptimizedImage
+  const renderModal = () => (
+    <AnimatePresence>
+      {selectedImage && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
+          onClick={handleImageClose}
+        >
+          <motion.div
+            initial={{ scale: 0.5 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.5 }}
+            className="relative w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <OptimizedImage
+              src={selectedImage}
+              alt="Full size"
+              priority={true}
+              className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg"
+            />
+            <button
+              onClick={handleImageClose}
+              className="absolute top-4 right-4 text-white rounded-full p-2 hover:scale-150 transition-all duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <div className="min-h-screen bg-black py-16 px-4 sm:px-6 lg:px-8">
@@ -195,149 +294,12 @@ const Gallery = () => {
 
               if (!items.length) return null;
 
-              return (
-                <motion.div
-                  key={rowIndex}
-                  className="grid grid-cols-12 gap-6"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: rowIndex * 0.1 }}
-                >
-                  {rowIndex % 2 === 0 ? (
-                    <>
-                      <motion.div
-                        className="col-span-8 aspect-video bg-gradient-to-br from-purple-900/30 to-gray-900 rounded-2xl overflow-hidden relative group cursor-pointer"
-                        whileHover={{
-                          scale: 1.02,
-                          boxShadow: "0 0 20px rgba(147, 51, 234, 0.2)",
-                        }}
-                        transition={{ duration: 0.3 }}
-                        onClick={() => handleImageSelect(items[0]?.image)}
-                      >
-                        {items[0]?.image && (
-                          <img
-                            loading="lazy"
-                            decoding="async"
-                            src={items[0].image}
-                            alt="Event"
-                            className="absolute inset-0 w-full h-full object-cover"
-                          />
-                        )}
-                      </motion.div>
-                      <motion.div
-                        className="col-span-4 aspect-square bg-gradient-to-br from-purple-900/30 to-gray-900 rounded-2xl overflow-hidden relative group cursor-pointer"
-                        whileHover={{
-                          scale: 1.02,
-                          boxShadow: "0 0 20px rgba(147, 51, 234, 0.2)",
-                        }}
-                        transition={{ duration: 0.3 }}
-                        onClick={() => handleImageSelect(items[1]?.image)}
-                      >
-                        {items[1]?.image && (
-                          <img
-                            loading="lazy"
-                            decoding="async"
-                            src={items[1].image}
-                            alt="Event"
-                            className="absolute inset-0 w-full h-full object-cover"
-                          />
-                        )}
-                      </motion.div>
-                    </>
-                  ) : (
-                    <>
-                      <motion.div
-                        className="col-span-4 aspect-square bg-gradient-to-br from-purple-900/30 to-gray-900 rounded-2xl overflow-hidden relative group cursor-pointer"
-                        whileHover={{
-                          scale: 1.02,
-                          boxShadow: "0 0 20px rgba(147, 51, 234, 0.2)",
-                        }}
-                        transition={{ duration: 0.3 }}
-                        onClick={() => handleImageSelect(items[0]?.image)}
-                      >
-                        {items[0]?.image && (
-                          <img
-                            loading="lazy"
-                            decoding="async"
-                            src={items[0].image}
-                            alt="Event"
-                            className="absolute inset-0 w-full h-full object-cover"
-                          />
-                        )}
-                      </motion.div>
-                      <motion.div
-                        className="col-span-8 aspect-video bg-gradient-to-br from-purple-900/30 to-gray-900 rounded-2xl overflow-hidden relative group cursor-pointer"
-                        whileHover={{
-                          scale: 1.02,
-                          boxShadow: "0 0 20px rgba(147, 51, 234, 0.2)",
-                        }}
-                        transition={{ duration: 0.3 }}
-                        onClick={() => handleImageSelect(items[1]?.image)}
-                      >
-                        {items[1]?.image && (
-                          <img
-                            loading="lazy"
-                            decoding="async"
-                            src={items[1].image}
-                            alt="Event"
-                            className="absolute inset-0 w-full h-full object-cover"
-                          />
-                        )}
-                      </motion.div>
-                    </>
-                  )}
-                </motion.div>
-              );
+              return renderImageGrid(items, rowIndex);
             })}
           </motion.div>
         </AnimatePresence>
 
-        <AnimatePresence>
-          {selectedImage && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
-              onClick={handleImageClose}
-            >
-              <motion.div
-                initial={{ scale: 0.5 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0.5 }}
-                className="relative w-full h-full flex items-center justify-center"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <img
-                  loading="lazy"
-                  decoding="async"
-                  src={selectedImage}
-                  alt="Full size"
-                  className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg"
-                />
-                <button
-                  onClick={handleImageClose}
-                  className="absolute top-4 right-4 text-white rounded-full p-2 hover:scale-150 transition-all duration-300"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {renderModal()}
       </div>
     </div>
   );
