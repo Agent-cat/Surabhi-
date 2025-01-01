@@ -2,7 +2,6 @@ import React, { useState, useCallback, useMemo, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion";
 import OptimizedImage from './OptimizedImage';
 
-
 import poster1 from "../assets/poster1.jpg"
 import poster2 from "../assets/poster1.jpg"
 import poster3 from "../assets/poster1.jpg"
@@ -11,7 +10,20 @@ const Gallery = () => {
   const [selectedEvent, setSelectedEvent] = useState("Vastrashala");
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Define events first
+  // Define handlers first
+  const handleImageSelect = useCallback((image) => {
+    setSelectedImage(image);
+  }, []);
+
+  const handleEventSelect = useCallback((eventName) => {
+    setSelectedEvent(eventName);
+  }, []);
+
+  const handleImageClose = useCallback(() => {
+    setSelectedImage(null);
+  }, []);
+
+  // Define events
   const events = useMemo(() => ({
     Natayaka: [
       { image: "https://i.imghippo.com/files/ntv8180co.jpg" },
@@ -66,7 +78,6 @@ const Gallery = () => {
       { image: "https://i.imghippo.com/files/sLmQ8981xMs.jpg" },
       { image: "https://i.imghippo.com/files/sLmQ8981xMs.jpg" },
       { image: "https://i.imghippo.com/files/EUa6624jVk.jpg" },
-     
     ],
     Sahithya: [
       { image: poster1 },
@@ -102,11 +113,16 @@ const Gallery = () => {
     return events[selectedEvent] || [];
   }, [events, selectedEvent]);
 
-  // Preload images
+  // Preload images with caching
+  const imageCache = useRef(new Set());
+  
   const preloadImages = useCallback((images) => {
     images.forEach(item => {
-      const img = new Image();
-      img.src = item.image;
+      if (!imageCache.current.has(item.image)) {
+        const img = new Image();
+        img.src = item.image;
+        imageCache.current.add(item.image);
+      }
     });
   }, []);
 
@@ -117,13 +133,14 @@ const Gallery = () => {
     }
   }, [selectedEvent, events, preloadImages]);
 
-  // Update ImageComponent to use OptimizedImage
+  // Update ImageComponent to use OptimizedImage with caching
   const ImageComponent = React.memo(({ src, alt, onClick, className }) => (
     <OptimizedImage
       src={src}
       alt={alt}
       onClick={onClick}
       className={className}
+      priority={imageCache.current.has(src)}
     />
   ));
 
@@ -177,18 +194,6 @@ const Gallery = () => {
       )}
     </motion.div>
   ), [handleImageSelect]);
-
-  const handleEventSelect = useCallback((eventName) => {
-    setSelectedEvent(eventName);
-  }, []);
-
-  const handleImageSelect = useCallback((image) => {
-    setSelectedImage(image);
-  }, []);
-
-  const handleImageClose = useCallback(() => {
-    setSelectedImage(null);
-  }, []);
 
   // Update modal image to use OptimizedImage
   const renderModal = () => (
