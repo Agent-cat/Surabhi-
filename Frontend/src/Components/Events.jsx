@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Events = () => {
 
-  const url="http://localhost:5000"
+  const url="https://surabhi-1.onrender.com"
   const [events, setEvents] = useState([]);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [showRegisterPopup, setShowRegisterPopup] = useState(false);

@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const RegisteredEvents = () => {
 
-  const url="http://localhost:5000"
+  const url="https://surabhi-1.onrender.com"
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

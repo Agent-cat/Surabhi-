@@ -10,7 +10,7 @@ const EventModal = React.memo(
     closeEventModal,
     editingEvent,
   }) => {
-    const url="http://localhost:5000"
+    const url="https://surabhi-1.onrender.com"
     return (
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 overflow-y-auto">
         <div className="bg-gray-800 rounded-xl w-full max-w-2xl my-8 mx-4 relative">
@@ -391,7 +391,7 @@ const AdminPanel = () => {
     setEditingEvent(null);
   }, []);
 
-   const url="http://localhost:5000";
+   const url="https://surabhi-1.onrender.com";
   const closeCategoryModal = useCallback(() => {
     setShowCategoryModal(false);
     setCategoryForm({ categoryName: "" });
