@@ -31,7 +31,7 @@ html {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Add these to your existing styles */
+
 .video-fade-enter {
   opacity: 0;
 }

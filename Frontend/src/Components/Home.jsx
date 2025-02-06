@@ -2,7 +2,6 @@ import React, { memo, useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { FaYoutube } from "react-icons/fa";
-import OptimizedImage from './OptimizedImage';
 import { loadSlim } from "tsparticles-slim"; 
 import Particles from "react-tsparticles";
 
@@ -134,6 +133,39 @@ const chiefGuests = [
   }
 ];
 
+const participationSteps = [
+  {
+    id: 1,
+    title: "Explore Events List",
+    description: "Browse through our diverse range of cultural events and competitions"
+  },
+  {
+    id: 2,
+    title: "Event Registration",
+    description: "Complete the registration process for your chosen events"
+  },
+  {
+    id: 3,
+    title: "Event Schedule",
+    description: "Check the detailed schedule to plan your participation"
+  },
+  {
+    id: 4,
+    title: "Select Event",
+    description: "Choose your preferred events from the available options"
+  },
+  {
+    id: 5,
+    title: "Event Requirements",
+    description: "Review all requirements and guidelines for your selected events"
+  },
+  {
+    id: 6,
+    title: "Attend Event",
+    description: "Join us at the venue and showcase your talent"
+  }
+];
+
 const Home = () => {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -232,29 +264,27 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Optimize timeline images
+  // Timeline images
   const TimelineImage = memo(({ item }) => (
-    <OptimizedImage
+    <img
       src={item.image}
       alt={item.title}
       className="rounded-lg shadow-xl w-full"
-      priority={true}
     />
   ));
 
-  // Optimize carousel images
+  // Carousel images
   const CarouselImage = memo(({ src, index }) => (
-    <OptimizedImage
+    <img
       src={src}
       alt={`Carousel image ${index + 1}`}
       className="w-72 h-80 object-cover rounded-lg"
-      priority={index < 3}
     />
   ));
 
-  // Optimize chief guest images
+  // Chief guest images
   const ChiefGuestImage = memo(({ guest }) => (
-    <OptimizedImage
+    <img
       src={guest.image}
       alt={guest.name}
       className="w-full h-60 object-cover"
@@ -374,6 +404,42 @@ const Home = () => {
                 <FaYoutube className="text-xl" />
                 View on YouTube
               </a>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* How to Participate section */}
+        <div className="py-16 ">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-saint-carello md:text-6xl font-bold text-white mb-4">
+                How to Participate?
+              </h2>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {participationSteps.map((step) => (
+                <motion.div
+                  key={step.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="relative bg-purple-900/20 rounded-lg p-8 group"
+                >
+                  <div className="absolute -top-6 -right-6 w-16 h-16 bg-purple-400 rounded-full flex items-center justify-center text-3xl font-bold text-black shadow-lg shadow-[#C59D65]/30">
+                    {step.id}
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-2xl font-bold text-purple-400 mb-3">{step.title}</h3>
+                    <p className="text-gray-300 text-lg">{step.description}</p>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </div>

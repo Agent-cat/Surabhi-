@@ -6,7 +6,7 @@ import { setToken, setUser } from "../utils/auth";
 
 const Login = () => {
 
-  const url="https://surabhi-1.onrender.com"
+  const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",

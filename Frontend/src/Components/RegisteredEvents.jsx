@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IoLocationSharp,
@@ -10,13 +10,13 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const RegisteredEvents = () => {
-
-  const url="https://surabhi-1.onrender.com"
+  const url = import.meta.env.VITE_API_URL;
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedEvent, setExpandedEvent] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState("list"); // "list" or "timetable"
   const navigate = useNavigate();
 
   const fetchRegisteredEvents = async () => {
@@ -27,28 +27,21 @@ const RegisteredEvents = () => {
         return;
       }
 
-      const response = await fetch(
-        `${url}/api/events/registered`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${url}/api/events/registered`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Failed to fetch registered events"
-        );
+        throw new Error("Failed to fetch registered events");
       }
 
       const data = await response.json();
       setEvents(data);
+      setLoading(false);
     } catch (error) {
-      console.error("Error fetching events:", error);
       setError(error.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -57,11 +50,23 @@ const RegisteredEvents = () => {
     fetchRegisteredEvents();
   }, []);
 
-  const filteredEvents = events.filter(
-    (event) =>
-      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredEvents = events.filter((event) =>
+    event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    event.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Group events by date for timetable view
+  const groupedEvents = useMemo(() => {
+    const groups = {};
+    filteredEvents.forEach((event) => {
+      const date = event.details.date;
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(event);
+    });
+    return groups;
+  }, [filteredEvents]);
 
   if (loading) {
     return (
@@ -109,21 +114,32 @@ const RegisteredEvents = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full max-w-md mx-auto block px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:border-purple-400"
           />
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode("list")}
+              className={`px-4 py-2 rounded-lg ${
+                viewMode === "list"
+                  ? "bg-purple-500 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              List View
+            </button>
+            <button
+              onClick={() => setViewMode("timetable")}
+              className={`px-4 py-2 rounded-lg ${
+                viewMode === "timetable"
+                  ? "bg-purple-500 text-white"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              Timetable View
+            </button>
+          </div>
         </div>
 
-        {filteredEvents.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
-          >
-            <p className="text-gray-400 text-lg">
-              {searchTerm
-                ? "No events match your search."
-                : "You haven't registered for any events yet."}
-            </p>
-          </motion.div>
-        ) : (
+        {viewMode === "list" ? (
+          // List View
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence>
               {filteredEvents.map((event) => (
@@ -202,6 +218,42 @@ const RegisteredEvents = () => {
                 </motion.div>
               ))}
             </AnimatePresence>
+          </div>
+        ) : (
+          // Timetable View
+          <div className="grid gap-8">
+            {Object.entries(groupedEvents).map(([date, dateEvents]) => (
+              <div key={date} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="bg-purple-500 text-white p-4">
+                  <h3 className="text-xl font-semibold">{date}</h3>
+                </div>
+                <div className="p-4">
+                  <div className="grid gap-4">
+                    {dateEvents
+                      .sort((a, b) => a.details.time.localeCompare(b.details.time))
+                      .map((event) => (
+                        <div
+                          key={event.eventId}
+                          className="flex items-center p-4 border border-gray-200 rounded-lg"
+                        >
+                          <div className="w-24 font-semibold text-purple-500">
+                            {event.details.time}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-800">
+                              {event.title}
+                            </h4>
+                            <div className="text-gray-600">
+                              <i className="fas fa-map-marker-alt mr-2"></i>
+                              {event.details.venue}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

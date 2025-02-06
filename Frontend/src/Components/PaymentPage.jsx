@@ -5,7 +5,7 @@ import qr from "../assets/qr.png";
 
 const PaymentPage = () => {
 
-  const url="https://surabhi-1.onrender.com"
+  const url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const location = useLocation();
   const [transactionId, setTransactionId] = useState("");

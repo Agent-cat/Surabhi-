@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Events = () => {
 
-  const url="https://surabhi-1.onrender.com"
+  const url = import.meta.env.VITE_API_URL;
   const [events, setEvents] = useState([]);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [showRegisterPopup, setShowRegisterPopup] = useState(false);
@@ -64,51 +64,50 @@ const Events = () => {
 
   const handleRegistrationSubmit = async () => {
     if (!acceptedTerms) {
-      alert("Please accept the terms and conditions");
+      setError("Please accept the terms and conditions");
       return;
     }
-
-    if (!selectedEvent || !selectedEvent.categoryId || !selectedEvent._id) {
-      alert("Invalid event data");
-      return;
-    }
-
-    setRegistrationStatus({ loading: true, error: null, success: false });
 
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please login to register for events");
         navigate("/login");
         return;
       }
 
-      const response = await axios.put(
+      const response = await fetch(
         `${url}/api/events/${selectedEvent.categoryId}/events/${selectedEvent._id}/register`,
-        {},
         {
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
         }
       );
 
-      if (response.status === 200) {
-        setRegistrationStatus({ loading: false, error: null, success: true });
-        setShowRegisterPopup(false);
-        setShowSuccessPopup(true);
-        setSelectedEvent(null);
-        setAcceptedTerms(false);
-        fetchEvents();
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.conflictingEvent) {
+          setError(`Time Conflict: You are already registered for "${data.conflictingEvent.title}" at ${data.conflictingEvent.time} on ${data.conflictingEvent.date}`);
+        } else {
+          setError(data.message || "Failed to register for event");
+        }
+        return;
       }
+
+      setShowRegisterPopup(false);
+      setShowSuccessPopup(true);
+      setError(null);
+      
+      // Update registration status
+      setRegistrationStatus(prev => ({
+        ...prev,
+        [selectedEvent._id]: true
+      }));
+
     } catch (error) {
-      console.error("Registration error:", error);
-      setRegistrationStatus({
-        loading: false,
-        error: error.response?.data?.message || "Failed to register for event",
-        success: false,
-      });
+      setError("An error occurred while registering for the event");
     }
   };
 
@@ -167,37 +166,31 @@ const Events = () => {
           </label>
         </div>
 
-        {registrationStatus.error && (
+        {error && (
           <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded text-red-100">
-            {registrationStatus.error}
+            {error}
           </div>
         )}
 
         <div className="flex gap-4">
           <button
             onClick={handleRegistrationSubmit}
-            disabled={!acceptedTerms || registrationStatus.loading}
+            disabled={!acceptedTerms}
             className={`flex-1 bg-purple-500 text-white px-6 py-2 rounded-md transition-all duration-300 
               ${
-                !acceptedTerms || registrationStatus.loading
+                !acceptedTerms
                   ? "opacity-50 cursor-not-allowed"
                   : "hover:bg-purple-600"
               }`}
           >
-            {registrationStatus.loading
-              ? "Registering..."
-              : "Confirm Registration"}
+            Confirm Registration
           </button>
           <button
             onClick={() => {
               setShowRegisterPopup(false);
               setSelectedEvent(null);
               setAcceptedTerms(false);
-              setRegistrationStatus({
-                loading: false,
-                error: null,
-                success: false,
-              });
+              setError(null);
             }}
             className="px-6 py-2 border border-gray-500 text-gray-300 rounded-md hover:bg-gray-700 transition-all duration-300"
           >

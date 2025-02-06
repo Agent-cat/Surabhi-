@@ -92,6 +92,29 @@ export const registerForEvent = async (req, res) => {
         .json({ message: "Already registered for this event" });
     }
 
+    // Get all categories to check for time conflicts
+    const allCategories = await Event.find();
+    const eventDate = event.details.date;
+    const eventTime = event.details.time;
+
+    // Check for time conflicts with other registered events
+    for (const cat of allCategories) {
+      for (const evt of cat.Events) {
+        if (evt.registeredStudents.includes(userId)) {
+          if (evt.details.date === eventDate && evt.details.time === eventTime) {
+            return res.status(400).json({
+              message: "Time conflict: You are already registered for another event at this time",
+              conflictingEvent: {
+                title: evt.title,
+                date: evt.details.date,
+                time: evt.details.time
+              }
+            });
+          }
+        }
+      }
+    }
+
     // Add user to registered students
     event.registeredStudents.push(userId);
     await category.save();
