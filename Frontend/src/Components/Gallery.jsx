@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-
 import poster1 from "../assets/poster1.jpg"
 import poster2 from "../assets/poster1.jpg"
 import poster3 from "../assets/poster1.jpg"
@@ -10,7 +9,7 @@ const Gallery = () => {
   const [selectedEvent, setSelectedEvent] = useState("Vastrashala");
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Define events first
+  // Define events first with memoization
   const events = useMemo(() => ({
     Natayaka: [
       { image: "https://i.imghippo.com/files/ntv8180co.jpg" },
@@ -65,7 +64,6 @@ const Gallery = () => {
       { image: "https://i.imghippo.com/files/sLmQ8981xMs.jpg" },
       { image: "https://i.imghippo.com/files/sLmQ8981xMs.jpg" },
       { image: "https://i.imghippo.com/files/EUa6624jVk.jpg" },
-     
     ],
     Sahithya: [
       { image: poster1 },
@@ -96,49 +94,64 @@ const Gallery = () => {
     ],
   }), []);
 
-  // Calculate current event items
+  // Optimize current event items calculation
   const currentEventItems = useMemo(() => {
     return events[selectedEvent] || [];
   }, [events, selectedEvent]);
 
-  // Preload images
-  const preloadImages = useCallback((images) => {
-    images.forEach(item => {
-      const img = new Image();
-      img.src = item.image;
-    });
-  }, []);
-
-  // Preload images when event changes
+  // Optimize image loading with intersection observer
   useEffect(() => {
-    if (events[selectedEvent]) {
-      preloadImages(events[selectedEvent]);
-    }
-  }, [selectedEvent, events, preloadImages]);
+    const imageObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+              imageObserver.unobserve(img);
+            }
+          }
+        });
+      },
+      { rootMargin: '50px' }
+    );
 
-  // Optimize image loading
-  useEffect(() => {
-    const images = currentEventItems;
-    images.forEach(item => {
-      if (item?.image) {
-        const img = new Image();
-        img.loading = "lazy";
-        img.src = item.image;
-      }
-    });
-  }, [currentEventItems]);
+    const images = document.querySelectorAll('.lazy-image');
+    images.forEach(img => imageObserver.observe(img));
 
+    return () => {
+      images.forEach(img => imageObserver.unobserve(img));
+    };
+  }, [selectedEvent]);
+
+  // Optimize event selection
   const handleEventSelect = useCallback((eventName) => {
     setSelectedEvent(eventName);
   }, []);
 
+  // Optimize image selection
   const handleImageSelect = useCallback((image) => {
     setSelectedImage(image);
   }, []);
 
+  // Optimize image close
   const handleImageClose = useCallback(() => {
     setSelectedImage(null);
   }, []);
+
+  // Optimize image rendering with memo
+  const ImageComponent = React.memo(({ image, onClick, className }) => (
+    <img
+      className={`lazy-image ${className}`}
+      data-src={image}
+      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+      alt="Event"
+      onClick={onClick}
+      loading="lazy"
+      decoding="async"
+    />
+  ));
 
   return (
     <div className="min-h-screen bg-black py-16 px-4 sm:px-6 lg:px-8">
@@ -215,11 +228,9 @@ const Gallery = () => {
                         onClick={() => handleImageSelect(items[0]?.image)}
                       >
                         {items[0]?.image && (
-                          <img
-                            loading="lazy"
-                            decoding="async"
-                            src={items[0].image}
-                            alt="Event"
+                          <ImageComponent
+                            image={items[0].image}
+                            onClick={() => handleImageSelect(items[0].image)}
                             className="absolute inset-0 w-full h-full object-cover"
                           />
                         )}
@@ -234,11 +245,9 @@ const Gallery = () => {
                         onClick={() => handleImageSelect(items[1]?.image)}
                       >
                         {items[1]?.image && (
-                          <img
-                            loading="lazy"
-                            decoding="async"
-                            src={items[1].image}
-                            alt="Event"
+                          <ImageComponent
+                            image={items[1].image}
+                            onClick={() => handleImageSelect(items[1].image)}
                             className="absolute inset-0 w-full h-full object-cover"
                           />
                         )}
@@ -256,11 +265,9 @@ const Gallery = () => {
                         onClick={() => handleImageSelect(items[0]?.image)}
                       >
                         {items[0]?.image && (
-                          <img
-                            loading="lazy"
-                            decoding="async"
-                            src={items[0].image}
-                            alt="Event"
+                          <ImageComponent
+                            image={items[0].image}
+                            onClick={() => handleImageSelect(items[0].image)}
                             className="absolute inset-0 w-full h-full object-cover"
                           />
                         )}
@@ -275,11 +282,9 @@ const Gallery = () => {
                         onClick={() => handleImageSelect(items[1]?.image)}
                       >
                         {items[1]?.image && (
-                          <img
-                            loading="lazy"
-                            decoding="async"
-                            src={items[1].image}
-                            alt="Event"
+                          <ImageComponent
+                            image={items[1].image}
+                            onClick={() => handleImageSelect(items[1].image)}
                             className="absolute inset-0 w-full h-full object-cover"
                           />
                         )}

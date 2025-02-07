@@ -7,6 +7,7 @@ import {
   updateEvent,
   deleteEvent,
   registerForEvent,
+  unregisterFromEvent,
   createEventInCategory,
   updateEventInCategory,
   createCategory,
@@ -36,6 +37,7 @@ router.post("/category", createCategory);
 router.post("/:categoryId/events", createEventInCategory);
 router.put("/:categoryId/events/:eventId", updateEventInCategory);
 router.delete("/:categoryId/events/:eventId", deleteEventInCategory);
-router.put("/:categoryId/events/:eventId/register", protect, registerForEvent);
+router.post("/:categoryId/events/:eventId/register", protect, registerForEvent);
+router.delete("/:categoryId/events/:eventId/unregister", protect, unregisterFromEvent);
 
 export default router;

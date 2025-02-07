@@ -5,6 +5,7 @@ import { FaYoutube } from "react-icons/fa";
 import { loadSlim } from "tsparticles-slim"; 
 import Particles from "react-tsparticles";
 
+
 // Import assets
 import video from "../assets/intro3.mp4";
 import logo from "../assets/logo.png";
@@ -12,54 +13,32 @@ import poster2025 from "../assets/2025.jpg";
 import poster2024 from "../assets/2024.jpg";
 import poster2023 from "../assets/2023.jpg";
 import poster2022 from "../assets/2022.jpg";
+import partnerImage from "../assets/Partners.png";
 
 const timelineData = [
-  {
-    year: 2025,
-    title: "The Future",
-    description:
-      "Celebrating cultural diversity with groundbreaking performances",
-    image: poster2025,
-  },
+  
   {
     year: 2024,
     title: "New Heights",
     description: "Introduced new art forms and collaborative performances",
-    image: poster2024,
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379758/2024i_b6r9hy.jpg",
   },
   {
     year: 2023,
     title: "Growing Strong",
     description:
       "Expanded to include international participants and professional artists",
-    image: poster2023,
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379758/2023i_dp6r0u.jpg",
   },
   {
     year: 2022,
     title: "The Beginning",
     description:
       "First edition of Surabhi with over 1000 participants from across India",
-    image: poster2022,
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735380198/2022i_ihzcmw.jpg",
   },
 ];
 
-const videoTeasers = [
-  {
-    title: "Dance Performances",
-    thumbnail: poster2024,
-    description: "Spectacular dance performances from previous years",
-  },
-  {
-    title: "Music Shows",
-    thumbnail: poster2023,
-    description: "Mesmerizing musical performances",
-  },
-  {
-    title: "Cultural Events",
-    thumbnail: poster2025,
-    description: "Highlights of our cultural celebrations",
-  },
-];
 
 const carouselImages = [
   poster2022,
@@ -79,57 +58,57 @@ const chiefGuests = [
   {
     name: "Harsha Chemudu",
     role: "Actor",
-    image: "https://i.imghippo.com/files/jr9046JM.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379767/g1_gth4yu.jpg"
   },
   {
     name: "Ram Miriyala", 
     role: "Singer",
-    image: "https://i.imghippo.com/files/zP1283Cn.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379766/g2_nwtfyi.jpg"
   },
   {
     name: "Yashwanth ",
     role: "Dance Choreographer",
-    image: "https://i.imghippo.com/files/Vmo5988bqM.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735380176/g4_be5vwm.jpg"
   },
   {
     name: "Naveen IAS",
     role: "IAS",
-    image: "https://i.imghippo.com/files/HB6883o.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379765/g3_ccux51.jpg"
   },
   {
     name: "Pranav Kaushik",
     role: "Actor",
-    image: "https://i.imghippo.com/files/uTea5112JY.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379764/g5_kfp48m.jpg"
   },
   {
     name: "Vamsi Pujith",
     role: "Actor",
-    image: "https://i.imghippo.com/files/kzQ3707HM.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379762/g6_qeve0t.jpg"
   },
   {
     name: "Roshini Sahota",
     role: "Actress",
-    image: "https://i.imghippo.com/files/uKRI5964lsY.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379751/g7_sqofuv.jpg"
   },
   {
     name: "Garima Bhardwaj",
     role: "Designer",
-    image: "https://i.imghippo.com/files/ZsZ8557JBE.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379761/g8_zzrckr.jpg"
   },
   {
     name: "Navin Tammala",
     role: "Singer",
-    image: "https://i.imghippo.com/files/cPXP5273wcw.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379751/g9_dyrmfz.jpg"
   },
   {
     name: "Deepak",
     role: "Music Composer",
-    image: "https://i.imghippo.com/files/xgP2166aM.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379760/g10_zneydh.jpg"
   },
   {
     name: "Ananda Vardhan",
     role: "Actor",
-    image: "https://i.imghippo.com/files/oPj6522Es.jpg"
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379759/g11_yvh7me.jpg"
   }
 ];
 
@@ -174,34 +153,34 @@ const Home = () => {
   });
 
   const [timeLeft, setTimeLeft] = useState({
-    days: 102,
+    days: 28,
     hours: 0,
-    minutes: 0,
-    seconds: 0,
+    minutes: 32,
+    seconds: 44,
   });
 
   const [currentGuest, setCurrentGuest] = useState(0);
 
   useEffect(() => {
+    const targetDate = new Date('2025-03-07T00:00:00+05:30');
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        return {
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000)
+        };
+      }
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    };
+
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        } else if (prev.days > 0) {
-          return {
-            ...prev,
-            days: prev.days - 1,
-            hours: 23,
-            minutes: 59,
-            seconds: 59,
-          };
-        }
-        return prev;
-      });
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(timer);
@@ -244,7 +223,7 @@ const Home = () => {
         speed: 1,
       },
     },
-    fpsLimit: 30,
+    fpsLimit: 120,
   };
 
   const [isCarouselVisible, setIsCarouselVisible] = useState(false);
@@ -284,11 +263,15 @@ const Home = () => {
 
   // Chief guest images
   const ChiefGuestImage = memo(({ guest }) => (
-    <img
-      src={guest.image}
-      alt={guest.name}
-      className="w-full h-60 object-cover"
-    />
+    <div className="flex flex-col items-center">
+      <img
+        src={guest.image}
+        alt={guest.name}
+        className="w-full h-60 object-cover rounded-lg mb-4"
+      />
+      <h3 className="text-xl font-bold text-white">{guest.name}</h3>
+      <p className="text-purple-400">{guest.role}</p>
+    </div>
   ));
 
   return (
@@ -409,34 +392,61 @@ const Home = () => {
         </div>
 
         {/* How to Participate section */}
-        <div className="py-16 ">
+        <div className="py-16 bg-gradient-to-b from-black via-purple-900/20 to-black">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-5xl font-saint-carello md:text-6xl font-bold text-white mb-4">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="text-5xl font-saint-carello md:text-6xl font-bold text-white mb-4"
+              >
                 How to Participate?
-              </h2>
+              </motion.h2>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="w-24 h-1 bg-purple-400 mx-auto"
+              />
             </div>
 
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative"
             >
-              {participationSteps.map((step) => (
+              {participationSteps.map((step, index) => (
                 <motion.div
                   key={step.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="relative bg-purple-900/20 rounded-lg p-8 group"
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 10px 30px -10px rgba(196, 130, 252, 0.2)"
+                  }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="relative bg-purple-900/20 rounded-xl p-8 backdrop-blur-sm border border-purple-500/20 group hover:border-purple-500/40 transition-all duration-300"
                 >
-                  <div className="absolute -top-6 -right-6 w-16 h-16 bg-purple-400 rounded-full flex items-center justify-center text-3xl font-bold text-black shadow-lg shadow-[#C59D65]/30">
+                  <div className="absolute -top-6 left-6 w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-2xl font-bold text-white transform -rotate-12 group-hover:rotate-0 transition-transform duration-300 shadow-lg">
                     {step.id}
                   </div>
-                  <div className="mt-4">
-                    <h3 className="text-2xl font-bold text-purple-400 mb-3">{step.title}</h3>
-                    <p className="text-gray-300 text-lg">{step.description}</p>
+                  {index !== participationSteps.length - 1 && (
+                    <div className="hidden lg:block absolute top-1/2 right-0 w-8 h-0.5 bg-purple-500/20 transform translate-x-full" />
+                  )}
+                  <Link to="/events" className="mt-8">
+                    <h3 className="text-2xl font-bold text-purple-400 mb-4 group-hover:text-purple-300 transition-colors duration-300">
+                      {step.title}
+                    </h3>
+                    <p className="text-gray-300 text-lg leading-relaxed group-hover:text-white transition-colors duration-300">
+                      {step.description}
+                    </p>
+                  </Link>
+                  <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                   </div>
                 </motion.div>
               ))}
@@ -452,12 +462,13 @@ const Home = () => {
             transition={{ duration: 0.5 }}
             className="text-2xl sm:text-3xl md:text-4xl font-saint-carell font-bold mb-6 md:mb-8 text-center text-white"
           >
-            Chief Guests
+           Previous Chief Guests
           </motion.h2>
           <div className="relative">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {visibleGuests.map((guest, index) => (
                 <ChiefGuestImage key={index} guest={guest} />
+                
               ))}
             </div>
             
@@ -554,6 +565,32 @@ const Home = () => {
               {carouselImages.map((image, index) => (
                 <CarouselImage key={index} src={image} index={index} />
               ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Our Partners Section */}
+        <div className="w-full pt-24 ">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-2xl sm:text-3xl md:text-4xl font-saint-carell font-bold mb-8 text-center text-white"
+          >
+            Our Partners
+          </motion.h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-md mx-auto"
+          >
+            <div className="relative rounded-xl p-8 backdrop-blur-sm">
+              <img
+                src={partnerImage}
+                alt="Our Partners"
+                className="w-full h-auto object-contain rounded-lg"
+              />
             </div>
           </motion.div>
         </div>

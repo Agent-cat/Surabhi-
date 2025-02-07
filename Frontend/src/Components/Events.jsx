@@ -62,6 +62,55 @@ const Events = () => {
     setShowRegisterPopup(true);
   };
 
+  const handleUnregisterClick = async (categoryId, event) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      const response = await fetch(
+        `${url}/api/events/${categoryId}/events/${event._id}/unregister`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.message);
+        return;
+      }
+
+      // Update local state
+      const updatedEvents = events.map((category) => {
+        if (category._id === categoryId) {
+          const updatedEvents = category.Events.map((e) => {
+            if (e._id === event._id) {
+              return {
+                ...e,
+                registeredStudents: e.registeredStudents.filter(
+                  (id) => id !== localStorage.getItem("userId")
+                ),
+              };
+            }
+            return e;
+          });
+          return { ...category, Events: updatedEvents };
+        }
+        return category;
+      });
+      setEvents(updatedEvents);
+      setShowSuccessPopup(true);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   const handleRegistrationSubmit = async () => {
     if (!acceptedTerms) {
       setError("Please accept the terms and conditions");
@@ -78,9 +127,10 @@ const Events = () => {
       const response = await fetch(
         `${url}/api/events/${selectedEvent.categoryId}/events/${selectedEvent._id}/register`,
         {
-          method: "PUT",
+          method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
           },
         }
       );
@@ -273,52 +323,54 @@ const Events = () => {
                                 />
                               </div>
                               <div className="flex-1 space-y-4">
-                                <h4 className="text-xl text-purple-300 font-semibold">
-                                  {event.title}
-                                </h4>
-                                <p className="text-gray-300">
-                                  {event.details.description}
-                                </p>
-                                <div className="flex flex-col sm:flex-row gap-4 text-sm">
-                                  <div className="flex items-center">
-                                    <IoLocationSharp className="text-purple-400" />
-                                    <span className="ml-2">
+                                <div className="flex flex-col space-y-4">
+                                  <h3 className="text-xl font-semibold text-purple-400">
+                                    {event.title}
+                                  </h3>
+                                  <div className="text-gray-300">
+                                    <p>{event.details.description}</p>
+                                    <p className="mt-2">
+                                      <span className="font-semibold">Venue:</span>{" "}
                                       {event.details.venue}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center">
-                                    <IoCalendarClear className="text-purple-400" />
-                                    <span className="ml-2">
+                                    </p>
+                                    <p>
+                                      <span className="font-semibold">Date:</span>{" "}
                                       {event.details.date}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center">
-                                    <IoCalendarClear className="text-purple-400" />
-                                    <span className="ml-2">
+                                    </p>
+                                    <p>
+                                      <span className="font-semibold">Time:</span>{" "}
                                       {event.details.time}
-                                    </span>
+                                    </p>
+                                    <p>
+                                      <span className="font-semibold">Participants:</span>{" "}
+                                      {event.registeredStudents.length} / {event.participantLimit}
+                                    </p>
                                   </div>
+                                  {event.registeredStudents.includes(
+                                    localStorage.getItem("userId")
+                                  ) ? (
+                                    <button
+                                      onClick={() => handleUnregisterClick(chart._id, event)}
+                                      className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                                    >
+                                      Unregister
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleRegisterClick(chart._id, event)}
+                                      className={`px-4 py-2 rounded-md transition duration-300 ${
+                                        event.registeredStudents.length >= event.participantLimit
+                                          ? "bg-gray-500 cursor-not-allowed"
+                                          : "bg-purple-500 hover:bg-purple-600 text-white"
+                                      }`}
+                                      disabled={event.registeredStudents.length >= event.participantLimit}
+                                    >
+                                      {event.registeredStudents.length >= event.participantLimit
+                                        ? "Event Full"
+                                        : "Register"}
+                                    </button>
+                                  )}
                                 </div>
-                                {event.registeredStudents?.includes(
-                                  localStorage.getItem("userId")
-                                ) ? (
-                                  <button
-                                    disabled
-                                    className="bg-gray-500 text-white px-6 py-2 rounded-md cursor-not-allowed"
-                                  >
-                                    Already Registered
-                                  </button>
-                                ) : (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleRegisterClick(chart._id, event);
-                                    }}
-                                    className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                                  >
-                                    Register Now
-                                  </button>
-                                )}
                               </div>
                             </div>
                           </div>

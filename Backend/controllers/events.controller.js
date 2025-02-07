@@ -92,6 +92,13 @@ export const registerForEvent = async (req, res) => {
         .json({ message: "Already registered for this event" });
     }
 
+    // Check if event has reached participant limit
+    if (event.registeredStudents.length >= event.participantLimit) {
+      return res
+        .status(400)
+        .json({ message: "Event has reached maximum participants limit" });
+    }
+
     // Get all categories to check for time conflicts
     const allCategories = await Event.find();
     const eventDate = event.details.date;
@@ -159,6 +166,43 @@ export const getRegisteredEvents = async (req, res) => {
   }
 };
 
+export const unregisterFromEvent = async (req, res) => {
+  try {
+    const { categoryId, eventId } = req.params;
+    const userId = req.user._id;
+
+    // Find the category
+    const category = await Event.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // Find the specific event in the category
+    const event = category.Events.find((e) => e._id.toString() === eventId);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    // Check if user is registered
+    if (!event.registeredStudents.includes(userId)) {
+      return res
+        .status(400)
+        .json({ message: "Not registered for this event" });
+    }
+
+    // Remove user from registered students
+    event.registeredStudents = event.registeredStudents.filter(
+      (id) => id.toString() !== userId.toString()
+    );
+
+    await category.save();
+
+    res.status(200).json({ message: "Successfully unregistered from event" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const createEventInCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
@@ -179,6 +223,7 @@ export const createEventInCategory = async (req, res) => {
       image: req.body.image,
       termsandconditions: req.body.termsandconditions,
       registeredStudents: [],
+      participantLimit: req.body.participantLimit
     });
 
     await category.save();
@@ -197,7 +242,7 @@ export const updateEventInCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    const event = category.Events.find((e) => e.eventId.toString() === eventId);
+    const event = category.Events.find((e) => e._id.toString() === eventId);
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
@@ -207,6 +252,7 @@ export const updateEventInCategory = async (req, res) => {
       details: req.body.details,
       image: req.body.image,
       termsandconditions: req.body.termsandconditions,
+      participantLimit: req.body.participantLimit
     });
 
     await category.save();

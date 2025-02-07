@@ -17,6 +17,8 @@ const RegisteredEvents = () => {
   const [expandedEvent, setExpandedEvent] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("list"); // "list" or "timetable"
+  const [showConfirmUnregister, setShowConfirmUnregister] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();
 
   const fetchRegisteredEvents = async () => {
@@ -38,6 +40,7 @@ const RegisteredEvents = () => {
       }
 
       const data = await response.json();
+      console.log("Fetched events:", data); // Debug log
       setEvents(data);
       setLoading(false);
     } catch (error) {
@@ -67,6 +70,47 @@ const RegisteredEvents = () => {
     });
     return groups;
   }, [filteredEvents]);
+
+  const handleUnregister = async (event) => {
+    console.log("Unregistering event:", event); // Debug log
+    setSelectedEvent(event);
+    setShowConfirmUnregister(true);
+  };
+
+  const confirmUnregister = async () => {
+    try {
+      console.log("Selected event for unregister:", selectedEvent);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      const response = await fetch(
+        `${url}/api/events/${selectedEvent.categoryId}/events/${selectedEvent.eventId}/unregister`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.message);
+        return;
+      }
+
+      // Remove the event from the local state
+      setEvents(events.filter((e) => e.eventId !== selectedEvent.eventId));
+      setShowConfirmUnregister(false);
+      setSelectedEvent(null);
+    } catch (error) {
+      console.error("Unregister error:", error);
+      setError(error.message);
+    }
+  };
 
   if (loading) {
     return (
@@ -98,6 +142,36 @@ const RegisteredEvents = () => {
     <div className="min-h-screen bg-black text-white p-8">
       <div className="pt-12"></div>
       <div className="max-w-6xl mx-auto">
+        {/* Confirmation Modal */}
+        {showConfirmUnregister && selectedEvent && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-gray-800 p-8 rounded-xl max-w-md w-full mx-4">
+              <h3 className="text-2xl font-bold text-purple-400 mb-4">
+                Confirm Unregistration
+              </h3>
+              <p className="text-gray-300 mb-6">
+                Are you sure you want to unregister from {selectedEvent.title}?
+              </p>
+              <div className="flex gap-4">
+                <button
+                  onClick={confirmUnregister}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                >
+                  Unregister
+                </button>
+                <button
+                  onClick={() => {
+                    setShowConfirmUnregister(false);
+                    setSelectedEvent(null);
+                  }}
+                  className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-300"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <motion.h1
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -213,6 +287,12 @@ const RegisteredEvents = () => {
                         <IoTime className="text-purple-400" />
                         <span>{event.details.time}</span>
                       </motion.div>
+                      <button
+                        onClick={() => handleUnregister(event)}
+                        className="w-full mt-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                      >
+                        Unregister
+                      </button>
                     </div>
                   </div>
                 </motion.div>
@@ -221,39 +301,98 @@ const RegisteredEvents = () => {
           </div>
         ) : (
           // Timetable View
-          <div className="grid gap-8">
-            {Object.entries(groupedEvents).map(([date, dateEvents]) => (
-              <div key={date} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="bg-purple-500 text-white p-4">
-                  <h3 className="text-xl font-semibold">{date}</h3>
-                </div>
-                <div className="p-4">
-                  <div className="grid gap-4">
-                    {dateEvents
-                      .sort((a, b) => a.details.time.localeCompare(b.details.time))
-                      .map((event) => (
-                        <div
-                          key={event.eventId}
-                          className="flex items-center p-4 border border-gray-200 rounded-lg"
-                        >
-                          <div className="w-24 font-semibold text-purple-500">
-                            {event.details.time}
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-800">
-                              {event.title}
-                            </h4>
-                            <div className="text-gray-600">
-                              <i className="fas fa-map-marker-alt mr-2"></i>
-                              {event.details.venue}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <table className="w-full bg-gray-900 rounded-lg overflow-hidden">
+              <thead>
+                <tr className="bg-purple-500 text-white">
+                  <th className="px-6 py-3 text-left font-semibold">Date</th>
+                  <th className="px-6 py-3 text-left font-semibold">Time</th>
+                  <th className="px-6 py-3 text-left font-semibold">Event</th>
+                  <th className="px-6 py-3 text-left font-semibold">Category</th>
+                  <th className="px-6 py-3 text-left font-semibold">Venue</th>
+                  <th className="px-6 py-3 text-left font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(groupedEvents)
+                  .sort(([dateA], [dateB]) => new Date(dateA) - new Date(dateB))
+                  .map(([date, events]) => (
+                    <React.Fragment key={date}>
+                      <tr className="bg-purple-900/30">
+                        <td colSpan="6" className="px-6 py-3 text-purple-400 font-semibold">
+                          {new Date(date).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </td>
+                      </tr>
+                      {events
+                        .sort((a, b) => {
+                          const timeA = a.details.time.split(':').map(Number);
+                          const timeB = b.details.time.split(':').map(Number);
+                          return timeA[0] * 60 + timeA[1] - (timeB[0] * 60 + timeB[1]);
+                        })
+                        .map((event, index) => (
+                          <motion.tr
+                            key={event.eventId}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="border-b border-gray-800 hover:bg-gray-800/50"
+                          >
+                            <td className="px-6 py-4 text-gray-300">
+                              {event.details.date}
+                            </td>
+                            <td className="px-6 py-4 text-gray-300">
+                              <div className="flex items-center gap-2">
+                                <IoTime className="text-purple-400" />
+                                {event.details.time}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div>
+                                <h4 className="font-semibold text-purple-400">
+                                  {event.title}
+                                </h4>
+                                <p className="text-sm text-gray-400 line-clamp-2 mt-1">
+                                  {event.details.description}
+                                </p>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="bg-purple-400/20 text-purple-400 px-3 py-1 rounded-full text-sm">
+                                {event.categoryName}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-2 text-gray-300">
+                                <IoLocationSharp className="text-purple-400" />
+                                {event.details.venue}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <button
+                                onClick={() => handleUnregister(event)}
+                                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300 text-sm flex items-center gap-2"
+                              >
+                                <span>Unregister</span>
+                              </button>
+                            </td>
+                          </motion.tr>
+                        ))}
+                    </React.Fragment>
+                  ))}
+                {Object.keys(groupedEvents).length === 0 && (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-8 text-center text-gray-400">
+                      No events found for the selected filters
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

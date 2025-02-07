@@ -39,6 +39,11 @@ const eventSchema = new mongoose.Schema({
           ref: "User",
         },
       ],
+      participantLimit: {
+        type: Number,
+        required: true,
+        default: 100
+      },
       termsandconditions: {
         type: String,
         required: true,
