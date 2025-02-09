@@ -35,7 +35,7 @@ const timelineData = [
     title: "The Beginning",
     description:
       "First edition of Surabhi with over 1000 participants from across India",
-    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735380198/2022i_ihzcmw.jpg",
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379758/2022i_ihzcmw.jpg",
   },
 ];
 
@@ -56,11 +56,6 @@ const carouselImages = [
 
 const chiefGuests = [
   {
-    name: "Harsha Chemudu",
-    role: "Actor",
-    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379767/g1_gth4yu.jpg"
-  },
-  {
     name: "Ram Miriyala", 
     role: "Singer",
     image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379766/g2_nwtfyi.jpg"
@@ -70,6 +65,18 @@ const chiefGuests = [
     role: "Dance Choreographer",
     image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735380176/g4_be5vwm.jpg"
   },
+  {
+    name: "Roshini Sahota",
+    role: "Actress",
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379751/g7_sqofuv.jpg"
+  },
+  {
+    name: "Harsha Chemudu",
+    role: "Actor",
+    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379767/g1_gth4yu.jpg"
+  },
+  
+  
   {
     name: "Naveen IAS",
     role: "IAS",
@@ -85,11 +92,7 @@ const chiefGuests = [
     role: "Actor",
     image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379762/g6_qeve0t.jpg"
   },
-  {
-    name: "Roshini Sahota",
-    role: "Actress",
-    image: "https://res.cloudinary.com/ds18h1q0k/image/upload/v1735379751/g7_sqofuv.jpg"
-  },
+  
   {
     name: "Garima Bhardwaj",
     role: "Designer",
@@ -391,44 +394,23 @@ const Home = () => {
           </div>
         </div>
 
-        {/* How to Participate section */}
-        <div className="py-16 bg-gradient-to-b from-black via-purple-900/20 to-black">
+       
+        <div className="py-16 ">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="text-5xl font-saint-carello md:text-6xl font-bold text-white mb-4"
-              >
+              <h2 className="text-5xl font-saint-carello md:text-6xl font-bold text-white mb-4">
                 How to Participate?
-              </motion.h2>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="w-24 h-1 bg-purple-400 mx-auto"
-              />
+              </h2>
+              <div className="w-1/3 h-1 bg-purple-400 mx-auto" />
             </div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative"
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
               {participationSteps.map((step, index) => (
-                <motion.div
+                <div
                   key={step.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  whileHover={{ 
-                    scale: 1.05,
-                    boxShadow: "0 10px 30px -10px rgba(196, 130, 252, 0.2)"
-                  }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="relative bg-purple-900/20 rounded-xl p-8 backdrop-blur-sm border border-purple-500/20 group hover:border-purple-500/40 transition-all duration-300"
+                  className="relative bg-purple-900/20 rounded-xl p-8 backdrop-blur-sm border border-purple-500/20 group hover:border-purple-500/40 transition-all duration-300 hover:scale-105 hover:shadow-[0_10px_30px_-10px_rgba(196,130,252,0.2)]"
                 >
+                  
                   <div className="absolute -top-6 left-6 w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-2xl font-bold text-white transform -rotate-12 group-hover:rotate-0 transition-transform duration-300 shadow-lg">
                     {step.id}
                   </div>
@@ -448,9 +430,9 @@ const Home = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
 
@@ -502,6 +484,7 @@ const Home = () => {
           <motion.h2
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
             className="text-2xl sm:text-3xl md:text-4xl font-saint-carell font-bold mb-12 text-center z-50"
           >
             Our Journey
@@ -565,32 +548,6 @@ const Home = () => {
               {carouselImages.map((image, index) => (
                 <CarouselImage key={index} src={image} index={index} />
               ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Our Partners Section */}
-        <div className="w-full pt-24 ">
-          <motion.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-2xl sm:text-3xl md:text-4xl font-saint-carell font-bold mb-8 text-center text-white"
-          >
-            Our Partners
-          </motion.h2>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-md mx-auto"
-          >
-            <div className="relative rounded-xl p-8 backdrop-blur-sm">
-              <img
-                src={partnerImage}
-                alt="Our Partners"
-                className="w-full h-auto object-contain rounded-lg"
-              />
             </div>
           </motion.div>
         </div>

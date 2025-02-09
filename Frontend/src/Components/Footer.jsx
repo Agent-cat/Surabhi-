@@ -55,7 +55,12 @@ const Footer = () => {
             <div>
               <h3 className="text-lg font-bold mb-4 text-white/90">Contact</h3>
               <ul className="space-y-3 text-gray-400">
-                <li className="flex items-center gap-2">
+                <li
+                  className="flex items-center cursor-pointer gap-2"
+                  onClick={() =>
+                    window.open("mailto:surabhi@kluniversity.in", "_self")
+                  }
+                >
                   <MdEmail className="text-xl" />
                   <span>surabhi@kluniversity.in</span>
                 </li>
