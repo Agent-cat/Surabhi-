@@ -13,7 +13,8 @@ import poster2025 from "../assets/2025.jpg";
 import poster2024 from "../assets/2024.jpg";
 import poster2023 from "../assets/2023.jpg";
 import poster2022 from "../assets/2022.jpg";
-import partnerImage from "../assets/Partners.png";
+import partner from "../assets/partner.png"
+
 
 const timelineData = [
   
@@ -148,7 +149,22 @@ const participationSteps = [
   }
 ];
 
+const g1 = 'https://i.imghippo.com/files/sM6764Naw.jpg';
+const g2 = 'https://i.imghippo.com/files/tHKJ9883hg.jpg';
+const g3 = 'https://i.imghippo.com/files/atP5261FE.jpg';
+const g4 = 'https://i.imghippo.com/files/eQpS7880Hk.jpg';
+const g5 = 'https://i.imghippo.com/files/nGdf6086yuc.jpg';
+const g6 = 'https://i.imghippo.com/files/eeh9105BdI.jpg';
+const g7 = 'https://i.imghippo.com/files/nJOW7845nI.jpg';
+const g8 = 'https://i.imghippo.com/files/clB1359zg.jpg';
+const g9 = 'https://i.imghippo.com/files/Xps1391kY.jpg';
+const g10 = 'https://i.imghippo.com/files/IJtP9786bm.jpg';
+const g11 = 'https://i.imghippo.com/files/WAPo8312rIw.jpg';
+
+
 const Home = () => {
+
+  
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -529,29 +545,53 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Image Carousel Section */}
-        <div className="carousel w-full overflow-hidden py-12">
-          <motion.div 
-            className="flex"
-            animate={isCarouselVisible ? {
-              x: ["0%", "-80%"]
-            } : {}}
-            transition={{
-              x: {
-                duration: 30,
-                repeat: Infinity,
-                ease: "linear"
-              }
-            }}
-          >
-            <div className="flex gap-4 min-w-full">
-              {carouselImages.map((image, index) => (
-                <CarouselImage key={index} src={image} index={index} />
-              ))}
-            </div>
-          </motion.div>
-        </div>
+        <div className="guests">
+  <div className="scroll-container">
+    <div className="imgscroll">
+      <img src={g1} alt="" className="g1" />
+      <img src={g2} alt="" className="g1" />
+      <img src={g3} alt="" className="g1" />
+      <img src={g4} alt="" className="g1" />
+      <img src={g5} alt="" className="g1" />
+      <img src={g6} alt="" className="g1" />
+      <img src={g7} alt="" className="g1" />
+      <img src={g8} alt="" className="g1" />
+      <img src={g9} alt="" className="g1" />
+      <img src={g10} alt="" className="g1" />
+      <img src={g11} alt="" className="g1" />
+      
+    </div>
+  </div>
+</div>
 
+        {/* Our Partners Section */}
+        
+        <div className="w-full py-12 sm:py-16 px-4">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-2xl sm:text-3xl md:text-4xl font-saint-carell font-bold mb-8 sm:mb-12 text-center z-50"
+          >
+            Our Partners
+          </motion.h2>
+          <div className="scroll-container">
+            <div className="imgscroll">
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+              <img src={partner} alt="" className="g1" />
+            </div>
+          </div>
+      
+        </div>
+        
         {/* Map Section */}
         <div className="w-full py-12 sm:py-16 px-4">
           <motion.h2

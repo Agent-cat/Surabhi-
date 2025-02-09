@@ -13,25 +13,19 @@ const Gallery = () => {
   const events = useMemo(() => ({
     Natayaka: [
       { image: "https://i.imghippo.com/files/ntv8180co.jpg" },
-      { image: "https://i.imghippo.com/files/JLnE5821vgI.jpg" },
+      { image: "https://i.imghippo.com/files/wVW1384II.jpg" },
       { image: "https://i.imghippo.com/files/iKNg1976KoI.jpg" },
       { image: "https://i.imghippo.com/files/wYBV3499MLk.jpg" },
       { image: "https://i.imghippo.com/files/HJaT8011tM.jpg" },
       { image: "https://i.imghippo.com/files/UtJ5585PFo.jpg" },
     ],
     Chitrakala: [
-      { image: poster1 },
-      { image: poster2 },
-      { image: poster3 },
-      { image: poster1 },
-      { image: poster2 },
-      { image: poster3 },
-      { image: poster1 },
-      { image: poster2 },
-      { image: poster3 },
-      { image: poster1 },
-      { image: poster2 },
-      { image: poster3 },
+      { image: "https://i.imghippo.com/files/YagJ8988UkQ.jpg" },
+      { image: "https://i.imghippo.com/files/FlKQ8861kAw.jpg" },
+      { image: "https://i.imghippo.com/files/pPfL5365T.jpg" },
+      { image: "https://i.imghippo.com/files/gOHk2168Nc.jpg" },
+      { image: "https://i.imghippo.com/files/pPfL5365T.jpg" },
+      
     ],
     Nritya: [
       { image: "https://i.imghippo.com/files/ex3195bc.jpg" },
@@ -42,42 +36,37 @@ const Gallery = () => {
       { image: "https://i.imghippo.com/files/yg8899L.jpg" },
     ],
     Raaga: [
+      { image: "https://i.imghippo.com/files/Ucnt4087A.jpg" },
+      { image: "https://i.imghippo.com/files/jgs1766ziY.jpg" },
+      { image: "https://i.imghippo.com/files/eAI9348oqw.jpg" },
+      { image: "https://i.imghippo.com/files/eAI9348oqw.jpg" },
+      { image: "https://i.imghippo.com/files/YHAR8241Z.jpg" },
+      { image: "https://i.imghippo.com/files/KfXn6335eQU.jpg" },
+      { image: "https://i.imghippo.com/files/KfXn6335eQU.jpg" },
+      
+
+     
       { image: "https://i.imghippo.com/files/BVuY2188Lj.jpg" },
-      { image: "https://i.imghippo.com/files/nigY5621pR.jpg" },
-      { image: "https://i.imghippo.com/files/oPj6522Es.jpg" },
-      { image: "https://i.imghippo.com/files/XUjc5970O.jpg" },
-      { image: "https://i.imghippo.com/files/mPRD4110TYU.jpg" },
-      { image: "https://i.imghippo.com/files/aBGu5336Bu.jpg" },
-      { image: "https://i.imghippo.com/files/oPj6522Es.jpg" },
-      { image: "https://i.imghippo.com/files/mPRD4110TYU.jpg" },
-      { image: "https://i.imghippo.com/files/mPRD4110TYU.jpg" },
-      { image: "https://i.imghippo.com/files/fQ4379Wsg.jpg" },
-      { image: "https://i.imghippo.com/files/aBGu5336Bu.jpg" },
+      { image: "https://i.imghippo.com/files/BVuY2188Lj.jpg" },
+      
     ],
     CineCarnival: [
       { image: "https://i.imghippo.com/files/vtIK7188pAI.jpg" },
-      { image: "https://i.imghippo.com/files/fP5006VmE.jpg" },
+      { image: "https://i.imghippo.com/files/WHXl6230xw.jpg" },
       { image: "https://i.imghippo.com/files/im2573eg.jpg" },
       { image: "https://i.imghippo.com/files/agB4246MHA.jpg" },
-      { image: "https://i.imghippo.com/files/WHXl6230xw.jpg" },
       { image: "https://i.imghippo.com/files/fLa2578Yis.jpg" },
       { image: "https://i.imghippo.com/files/sLmQ8981xMs.jpg" },
       { image: "https://i.imghippo.com/files/sLmQ8981xMs.jpg" },
       { image: "https://i.imghippo.com/files/EUa6624jVk.jpg" },
     ],
     Sahithya: [
-      { image: poster1 },
-      { image: poster2 },
-      { image: poster3 },
-      { image: poster1 },
-      { image: poster2 },
-      { image: poster3 },
-      { image: poster1 },
-      { image: poster2 },
-      { image: poster3 },
-      { image: poster1 },
-      { image: poster2 },
-      { image: poster3 },
+      { image: "https://i.imghippo.com/files/Sb6106Oog.jpg" },
+      { image: "https://i.imghippo.com/files/xeC4010Jyc.jpg" },
+      { image: "https://i.imghippo.com/files/yvH4876OKA.jpg" },
+     { image: "https://i.imghippo.com/files/BfOb5980kns.jpg" } ,
+     { image: "https://i.imghippo.com/files/Xmod2075bDU.jpg" } ,
+      
     ],
     Vastrashala: [
       { image: "https://i.imghippo.com/files/IQfu6477O.jpg" },
@@ -100,6 +89,8 @@ const Gallery = () => {
   }, [events, selectedEvent]);
 
   // Optimize image loading with intersection observer
+  const LQIP = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="; // 1x1 pixel transparent gif
+
   useEffect(() => {
     const imageObserver = new IntersectionObserver(
       (entries) => {
@@ -118,7 +109,10 @@ const Gallery = () => {
     );
 
     const images = document.querySelectorAll('.lazy-image');
-    images.forEach(img => imageObserver.observe(img));
+    images.forEach(img => {
+      img.src = LQIP; // Set LQIP as initial source
+      imageObserver.observe(img);
+    });
 
     return () => {
       images.forEach(img => imageObserver.unobserve(img));
@@ -145,7 +139,11 @@ const Gallery = () => {
     <img
       className={`lazy-image ${className}`}
       data-src={image}
-      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+      src={LQIP}
+      srcSet={
+        `${image}?w=300 300w, ${image}?w=600 600w, ${image}?w=900 900w`
+      }
+      sizes="(max-width: 600px) 300px, (max-width: 900px) 600px, 900px"
       alt="Event"
       onClick={onClick}
       loading="lazy"

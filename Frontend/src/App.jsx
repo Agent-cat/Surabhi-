@@ -36,6 +36,7 @@ const App = () => {
             <Navbar />
             <NRoutes />
             <Footer />
+        
           </div>
         )}
       </div>
