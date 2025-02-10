@@ -398,7 +398,7 @@ const Home = () => {
                 </video>
               </div>
               <a
-                href="https://youtu.be/3LgfXuZPWQE?feature=shared"
+                href="https://youtu.be/LrSxZu86Jn0"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full transition-colors duration-300"
@@ -574,19 +574,10 @@ const Home = () => {
           >
             Our Partners
           </motion.h2>
-          <div className="scroll-container">
-            <div className="imgscroll">
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
-              <img src={partner} alt="" className="g1" />
+          <div className="">
+            <div className="flex justify-center">
+              <img src={partner} alt="" className="g1 h-32 w-80"/>
+              
             </div>
           </div>
       
