@@ -64,10 +64,7 @@ const Footer = () => {
                   <MdEmail className="text-xl" />
                   <span>surabhi@kluniversity.in</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <MdPhone className="text-xl" />
-                  <span>+91 9505993133</span>
-                </li>
+                
                 <li className="flex items-center gap-2">
                   <MdLocationOn className="text-xl" />
                   <span>KL University, Vijayawada</span>
